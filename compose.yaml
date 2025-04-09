@@ -1,0 +1,12 @@
+services:
+  app:
+    image: node:latest
+    container_name: "tictactoe-app"
+    ports:
+      - "5000:5000"
+    environment:
+      - SERVER_PORT=5000
+    volumes:
+      - ./app:/app
+    restart: unless-stopped
+    command: sh -c "cd /app && npm install && node server.js"
