@@ -1,7 +1,7 @@
 import React from 'react';
-import { ResourceSelector } from './ResourceSelector.jsx'; // Adjust path
-import { TownGrid } from './TownGrid.jsx'; // Adjust path
-import { useTownStore } from './townStore.js'; // Adjust path
+import { ResourceSelector } from './ResourceSelector'; // Adjust path
+import { TownGrid } from './TownGrid'; // Adjust path
+import { useTownStore } from './townStore'; // Adjust path
 
 export function App() {
   const resetGrid = useTownStore((state) => state.resetGrid); // Get reset action
