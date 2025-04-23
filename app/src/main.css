@@ -1,0 +1,260 @@
+.main {
+    display: grid;
+    grid-template-rows: 2fr 3fr;
+    height: 100%;
+}
+
+.building_cards {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: tan;
+}
+
+.building_card {
+    display: grid;
+    grid-template-rows: 1fr 2fr 2fr 1.5fr;
+    height: 90%;
+    width: 90%;
+    background-color: rgb(229, 206, 176);
+    margin: 3%;
+    border-radius: 5px;
+    border: thin solid black;
+    justify-self: center;
+    align-self: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    background-color: rgb(10, 151, 10);
+    margin: 5%;
+    border: thin solid black;
+}
+
+.square {
+    margin: 5%;
+    background-color: rgb(22, 179, 14);
+    border: thin solid black;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-rows: 1fr 1.5fr 1fr;
+}
+
+.bottom {
+    display: grid;
+    grid-template-columns: 4fr 3.2fr 4fr;
+    background-color: grey;
+}
+
+.resource_area {
+    display: grid;
+    grid-template-rows: 1.2fr 2fr 0.2fr;
+}
+
+.resource_cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.resource_card {
+    background-color: tan;
+    margin: 7%;
+    border: thin solid black;
+    border-radius: 5px;
+    display: grid;
+    grid-template-rows: 1fr 3fr 1fr;
+}
+
+.right {
+    display: grid;
+    grid-template-rows: 4fr 1fr;
+}
+
+.monument_area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.monument {
+    background-color: tan;
+    margin: 13%;
+    border: thin solid black;
+    border-radius: 5%;
+}
+
+.button_area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.complete_town {
+    background-color: beige;
+    margin: 10% 20% 10% 20%;
+    border: thin solid black;
+    border-radius: 3%;
+    text-align: center;
+}
+
+.resource_card_name {
+    background-color: rgb(206, 134, 40);
+    border-radius: 5px 5px 0 0;
+    text-align: center;
+}
+
+.resource_card_bottom {
+    background-color: rgb(206, 134, 40);
+    border-radius: 0 0 5px 5px;
+}
+
+.resource_card_middle {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.center_piece {
+    grid-area: 2/2;
+}
+
+.glass {
+    background-color: rgb(12, 173, 213);
+    border: thin solid black;
+}
+
+.brick {
+    background-color: rgb(201, 53, 12);
+    border: thin solid black;
+}
+
+.stone {
+    background-color: rgb(151, 156, 157);
+    border: thin solid black;
+}
+
+.wheat {
+    background-color: rgb(244, 227, 78);
+    border: thin solid black;
+}
+
+.wood {
+    background-color: rgb(141, 81, 7);
+    border: thin solid black;
+}
+
+.building_name {
+    background-color: rgb(232, 163, 72);
+    border-radius: 5px 5px 0 0;
+    display: grid;
+    grid-template-columns: 90fr 30fr;
+}
+
+.building_bottom {
+    background-color: rgb(232, 163, 72);
+    border-radius: 0 0 5px 5px;
+}
+
+.four {
+    display: grid;
+    grid-template-columns: 13fr 10fr 10fr 13fr;
+    grid-template-rows: 8fr 10fr 10fr 8fr;
+}
+
+.six {
+    display: grid;
+    grid-template-columns: 10fr 10fr 10fr 10fr 10fr;
+    grid-template-rows: 8fr 10fr 10fr 8fr;
+}
+
+.three {
+    display: grid;
+    grid-template-columns: 10fr 10fr 10fr 10fr 10fr;
+    grid-template-rows: 8fr 7fr 8fr;
+}
+
+.two {
+    display: grid;
+    grid-template-columns: 10fr 10fr 10fr 10fr;
+    grid-template-rows: 10fr 8fr 10fr;
+}
+
+.eight {
+    display: grid;
+    grid-template-columns: 10fr 10fr 10fr 10fr 10fr 10fr;
+    grid-template-rows: 10fr 8fr 8fr 10fr;
+}
+
+.pole {
+    background-color: rgb(160, 86, 40);
+}
+
+.card_build {
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+}
+
+.cottage_piece {
+    background-color: cyan;
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.chapel_piece {
+    background-color: rgb(228, 112, 40);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.farm_piece {
+    background-color: rgb(228, 52, 40);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.tavern_piece {
+    background-color: rgb(12, 142, 20);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.well_piece {
+    background-color: rgb(169, 181, 185);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.theater_piece {
+    background-color: rgb(242, 221, 58);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.factory_piece {
+    background-color: rgb(21, 37, 127);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+.monument_piece {
+    background-color: rgb(176, 35, 176);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
+img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: fill; 
+}
+
+.factory_description {
+    font-size: 70%;
+}
