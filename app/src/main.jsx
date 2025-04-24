@@ -267,6 +267,6 @@ function Game() {
 const root = ReactDOM.createRoot(document.getElementById("game"));
 root.render(<Game />);
 
-function add(x, y) {
+export function add(x, y) {
     return x + y;
 }
