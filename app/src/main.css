@@ -52,6 +52,12 @@
     grid-template-rows: 1.2fr 2fr 0.2fr;
 }
 
+.block_area {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
 .resource_cards {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

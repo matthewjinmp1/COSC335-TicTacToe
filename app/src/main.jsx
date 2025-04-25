@@ -12,7 +12,7 @@ import monument_image from "./monument.jpg"
 
 function Cottage() {
     return(
-        <div className="building_card">
+        <div id="cottage" className="building_card">
             <div className="building_name">
                 <div>Cottage</div>
                 <div className="cottage_piece"></div>
@@ -34,7 +34,7 @@ function Cottage() {
 
 function Chapel() {
     return(
-        <div className="building_card">
+        <div id="chapel" className="building_card">
             <div className="building_name">
                 <div>Chapel</div>
                 <div className="chapel_piece"></div>
@@ -57,7 +57,7 @@ function Chapel() {
 
 function Farm() {
     return(
-        <div className="building_card">
+        <div id="farm" className="building_card">
             <div className="building_name">
                 <div>Farm</div>
                 <div className="farm_piece"></div>
@@ -80,7 +80,7 @@ function Farm() {
 
 function Tavern() {
     return(
-        <div className="building_card">
+        <div id="tavern" className="building_card">
             <div className="building_name">
                 <div>Tavern</div>
                 <div className="tavern_piece"></div>
@@ -102,7 +102,7 @@ function Tavern() {
 
 function Well() {
     return(
-        <div className="building_card">
+        <div id="well" className="building_card">
             <div className="building_name">
                 <div>Well</div>
                 <div className="well_piece"></div>
@@ -123,7 +123,7 @@ function Well() {
 
 function Theater() {
     return(
-        <div className="building_card">
+        <div id="theater" className="building_card">
             <div className="building_name">
                 <div>Theater</div>
                 <div className="theater_piece"></div>
@@ -146,7 +146,7 @@ function Theater() {
 
 function Factory() {
     return(
-        <div className="building_card">
+        <div id="factory" className="building_card">
             <div className="building_name">
                 <div>Factory</div>
                 <div className="factory_piece"></div>
@@ -170,7 +170,7 @@ function Factory() {
 
 function Monument() {
     return(
-        <div className="building_card">
+        <div id="monument" className="building_card">
             <div className="building_name">
                 <div>Cathedral of Caterina</div>
                 <div className="monument_piece"></div>
@@ -190,22 +190,22 @@ function Monument() {
     );
 }
 
-function Square({children}) {
+function Square({children, id}) {
     return(
-        <div className="square">
+        <div className="square" id={id}>
             {children}
         </div>
     );
 }
 
-function ResourceCard({resource}) {
+function ResourceCard({resource, index}) {
     return(
         <div className="resource_card">
-            <div className="resource_card_name">{resource}</div>
+            <div id={`resource_name${index}`} className="resource_card_name">{resource}</div>
             <div className="resource_card_middle">
-                <div className={`center_piece ${resource}`}></div>
+                <div id={`resource_block${index}`} className={`center_piece ${resource}`}></div>
             </div>
-            <div className="resource_Card_bottom"></div>
+            <div className="resource_card_bottom"></div>
         </div>
     );
 }
@@ -224,30 +224,36 @@ function Game() {
             </div>
             <div className="bottom">
                 <div className="resource_area">
-                    <div></div>
+                    <div className="block_area">
+                        <div id="brick_block" className="brick" style={{gridArea: "2/2"}}></div>
+                        <div id="glass_block" className="glass" style={{gridArea: "2/4"}}></div>
+                        <div id="wood_block" className="wood" style={{gridArea: "2/6"}}></div>
+                        <div id="stone_block" className="stone" style={{gridArea: "2/8"}}></div>
+                        <div id="wheat_block" className="wheat" style={{gridArea: "2/10"}}></div>
+                    </div>
                     <div className="resource_cards">
-                        <ResourceCard resource={"Brick"}></ResourceCard>
-                        <ResourceCard resource={"Glass"}></ResourceCard>
-                        <ResourceCard resource={"Stone"}></ResourceCard>
+                        <ResourceCard resource={"Brick"} index={1}></ResourceCard>
+                        <ResourceCard resource={"Glass"} index={2}></ResourceCard>
+                        <ResourceCard resource={"Stone"} index={3}></ResourceCard>
                     </div>
                 </div>
-                <div className="board">
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
-                    <Square></Square>
+                <div id="board" className="board">
+                    <Square id="00"></Square>
+                    <Square id="01"></Square>
+                    <Square id="02"></Square>
+                    <Square id="03"></Square>
+                    <Square id="10"></Square>
+                    <Square id="11"></Square>
+                    <Square id="12"></Square>
+                    <Square id="13"></Square>
+                    <Square id="20"></Square>
+                    <Square id="21"></Square>
+                    <Square id="22"></Square>
+                    <Square id="23"></Square>
+                    <Square id="30"></Square>
+                    <Square id="31"></Square>
+                    <Square id="32"></Square>
+                    <Square id="33"></Square>
                 </div>
                 <div className="right">
                     <div className="monument_area">
@@ -260,6 +266,7 @@ function Game() {
                     </div>
                 </div>
             </div>
+            <div id="cottage"></div>
         </div>
     );
 }
