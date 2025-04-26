@@ -82,16 +82,11 @@
     <div id="game" class="hidden">
       <script type="module" src="/src/main.jsx"></script>
     </div>
-    
-    <script>
-      function load_script(url) {
-        const script = document.createElement('script');
-        script.src = url;
-        document.head.appendChild(script);
-      }
 
-      document.addEventListener('DOMContentLoaded', () => {
-        load_script("/src/main.js");
+    <script type="module">
+      document.addEventListener('DOMContentLoaded', async () => {
+        // only now do we fetch & run main.js as a module
+        await import('/src/main.js');
       });
     </script>
   </body>
