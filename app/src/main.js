@@ -1,8 +1,8 @@
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
-await sleep(1000);
+// await sleep(1000);
 
 var resource_cards = document.getElementsByClassName('resource_card');
 var squares = document.getElementsByClassName('square');
@@ -97,7 +97,7 @@ function place_item(square) {
         deal_resources();
     } else if (building_selected) {
         if (square.classList.contains('selected')) {
-            coordinates = [];
+            let coordinates = [];
             for (let square of squares) {
                 if (square.classList.contains('selected')) {
                     square.innerHTML = '';
@@ -148,6 +148,7 @@ function place_item(square) {
             blocks_selected += 1;
         }
     }
+    uncover_blocks();
 }
 
 for (let square of squares) {
@@ -190,7 +191,7 @@ function deal_resources() {
 }
 
 function list_to_string(list) {
-    string = ''
+    let string = ''
     for (let row of list) {
         for (let e of row) {
             string += e;
@@ -200,7 +201,7 @@ function list_to_string(list) {
 }
 
 function get_builds(build) {
-    var builds = [];
+    let builds = [];
     let string1 = '';
     let string2 = '';
     for (let row of build) {
@@ -452,7 +453,7 @@ function get_score() {
     }
     for (let row = 0; row < 4; row++) {
         for (let column = 0; column < 4; column++) {
-            element = game_state[row][column];
+            let element = game_state[row][column];
             if (element == 'well') {
                 if (row > 0) {
                     let up = game_state[row-1][column];
@@ -527,7 +528,6 @@ function deselect_resources() {
     for (let block of blocks) {
         block.element.classList.remove('selected');
     }
-    stone_block.element.classList.remove('selected');
     for (let resource_card of resource_cards) {
         resource_card.classList.remove('selected');
     }
@@ -584,21 +584,54 @@ function convert_game_state_to_string() {
     return board;
 }
 
+// function complete_town() {
+//     let board = convert_game_state_to_string();
+//     let score = get_score();
+//     let end_time = get_time();
+
+//     document.getElementById('board_final').value = board;
+//     document.getElementById('score_final').value = score;
+//     document.getElementById('start_time').value = start_time;
+//     document.getElementById('end_time').value = end_time;
+//     document.getElementById('complete_town').submit();
+
+//     alert(score);
+// }
+
+// function logout() {
+//     document.getElementById('logout').submit();
+// }
+
+// const db = firebase.firestore();
+
+// function save_game(data) {
+//   const user = firebase.auth().currentUser;
+//   if (!user) {
+//     return Promise.reject(new Error('Not signed in'));
+//   }
+
+//   let board = convert_game_state_to_string();
+
+//   return db
+//     .collection('games')            
+//     .add({                           
+//       uid: user.uid,     
+//       board: board,    
+//     })
+// }
+
 function complete_town() {
-    let board = convert_game_state_to_string();
     let score = get_score();
-    let end_time = get_time();
-
-    document.getElementById('board_final').value = board;
-    document.getElementById('score_final').value = score;
-    document.getElementById('start_time').value = start_time;
-    document.getElementById('end_time').value = end_time;
-    document.getElementById('complete_town').submit();
-
     alert(score);
+    window.location.reload();  
 }
 
-function logout() {
-    document.getElementById('logout').submit();
+let complete_town_button = document.getElementById('complete_town');
+complete_town_button.addEventListener('click', complete_town);
+
+uncover_blocks();
+
+export function add(x, y) {
+    return x + y;
 }
 

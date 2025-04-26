@@ -1,4 +1,6 @@
-import { add } from "../src/main.jsx";
+import { add } from "../src/main.js";
+
+setTimeout(null, 10000)
 
 // Mock fetch globally
 global.fetch = vi.fn();

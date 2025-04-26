@@ -242,11 +242,20 @@
 }
 
 .factory_piece {
-    background-color: rgb(21, 37, 127);
     border-radius: 50%;
+    background-color: darkblue;
+    border: 1px solid black;
+    margin: 1px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
     margin: 20%;
-    border: thin solid black;
 }
+
+.scale {
+    transform: scale(1.5);
+}
+
 
 .monument_piece {
     background-color: rgb(176, 35, 176);
@@ -257,10 +266,14 @@
 
 img {
     width: 100%; 
-    height: 100%; 
+    height: 118px; 
     object-fit: fill; 
 }
 
 .factory_description {
     font-size: 70%;
+}
+
+.selected {
+    border: 2px solid red;
 }

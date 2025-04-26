@@ -82,6 +82,17 @@
     <div id="game" class="hidden">
       <script type="module" src="/src/main.jsx"></script>
     </div>
-    <script type="module" src="/src/main.js" defer></script>
+    
+    <script>
+      function load_script(url) {
+        const script = document.createElement('script');
+        script.src = url;
+        document.head.appendChild(script);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        load_script("/src/main.js");
+      });
+    </script>
   </body>
 </html>

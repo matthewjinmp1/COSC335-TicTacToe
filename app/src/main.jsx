@@ -95,7 +95,7 @@ function Tavern() {
                 </div>
                 <div className="pole"></div>
             </div>
-            <div className="building_bottom">Points based on your constructed taverns.</div>
+            <div className="building_bottom">Points based on your constructed taverns. 1/2/3/4/5 taverns = 2/5/8/13/20 points.</div>
         </div>
     );
 }
@@ -262,7 +262,7 @@ function Game() {
                     </div>
                     <div className="button_area">
                         <div></div>
-                        <div className="complete_town">Complete Town</div>
+                        <div id="complete_town" className="complete_town">Complete Town</div>
                     </div>
                 </div>
             </div>
@@ -273,7 +273,3 @@ function Game() {
 
 const root = ReactDOM.createRoot(document.getElementById("game"));
 root.render(<Game />);
-
-export function add(x, y) {
-    return x + y;
-}
