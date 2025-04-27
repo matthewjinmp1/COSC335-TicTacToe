@@ -1,3 +1,59 @@
+export function get_acheivements(game_state, score) {
+    let acheivements = [];
+    if (check_chief_diversity_officer(game_state)) {
+        acheivements.push('Chief Diversity Officer');
+    }
+    if (check_master_builder(score)) {
+        acheivements.push('Master Builder');
+    }
+    if (check_full_board(game_state)) {
+        acheivements.push('Full Board');
+    }
+    return acheivements;
+}
+
+export function check_chief_diversity_officer(game_state) {
+    let buildings = new Set();
+    let available_buildings = new Set([
+        'cottage',
+        'chapel',
+        'farm',
+        'tavern',
+        'well',
+        'theater',
+        'factory',
+        'monument'
+    ]);
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (available_buildings.has(e)) {
+                buildings.add(e);
+            }
+        }
+    }
+    if (buildings.size >= 8) {
+        return true;
+    }
+    return false;
+}
+
+export function check_master_builder(score) {
+    return score >= 50;
+}
+
+export function check_full_board(game_state) {
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (e == '_') {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 export function get_builds(build) {
     let builds = [];
     let string1 = '';
@@ -117,6 +173,16 @@ export function get_score(game_state) {
     let factories = 0;
     let monuments = 0;
     let empty_squares = 0;
+    let building_types = [
+        'cottage',
+        'chapel',
+        'farm',
+        'tavern',
+        'well',
+        'theater',
+        'factory',
+        'monument'
+    ];
     for (let row of game_state) {
         for (let square of row) {
             if (square == 'cottage') {

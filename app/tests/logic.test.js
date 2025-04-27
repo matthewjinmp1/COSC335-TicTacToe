@@ -1,4 +1,97 @@
-import { convert_game_state_to_string, get_score, list_to_string, get_builds } from '../src/functions.js';
+import { convert_game_state_to_string, get_score, list_to_string, get_builds, 
+  check_full_board, check_chief_diversity_officer } from '../src/functions.js';
+
+describe('check_chief_diversity_officer', () => {
+  it('returns true when all 8 distinct buildings appear anywhere in the 4×4 grid', () => {
+    // place each required building at least once
+    const grid = [
+      ['cottage', 'chapel',  'farm',    'tavern'],
+      ['well',    'theater', 'factory', 'monument'],
+      ['cottage', 'cottage', 'chapel',  'farm'],
+      ['tavern',  'well',    'theater', 'factory'],
+    ];
+    expect(check_chief_diversity_officer(grid)).toBe(true);
+  });
+
+  it('returns false if any one building is missing', () => {
+    // omit 'monument'
+    const grid = [
+      ['cottage', 'chapel',  'farm',   'tavern'],
+      ['well',    'theater', 'factory','cottage'],
+      ['chapel',  'farm',    'tavern', 'well'],
+      ['theater','factory',  'cottage','chapel'],
+    ];
+    expect(check_chief_diversity_officer(grid)).toBe(false);
+  });
+
+  it('ignores duplicates and non‐available entries', () => {
+    // only 7 distinct available buildings + some extras
+    const grid = [
+      ['cottage', 'chapel',  'farm',    'tavern'],
+      ['well',    'theater', 'factory', 'cottage'],
+      ['monument','monument','X',       'Y'],
+      ['Z',       'Z',       'chapel',  'farm'],
+    ];
+    // actually this has all 8 including 'monument' → true
+    expect(check_chief_diversity_officer(grid)).toBe(true);
+
+    // now remove 'farm' entirely
+    const grid2 = [
+      ['cottage', 'chapel',  'X',       'tavern'],
+      ['well',    'theater', 'factory', 'cottage'],
+      ['monument','monument','Y',       'Z'],
+      ['Z',       'chapel',  'X',       'tavern'],
+    ];
+    expect(check_chief_diversity_officer(grid2)).toBe(false);
+  });
+
+  it('returns false on an empty or all‐other grid', () => {
+    const emptyGrid = Array(4).fill(Array(4).fill(null));
+    expect(check_chief_diversity_officer(emptyGrid)).toBe(false);
+  });
+});
+
+describe('full_board', () => {
+  it('returns true when there are no "_" anywhere on a 4x4 board', () => {
+    const board = [
+      ['a','b','c','d'],
+      ['e','f','g','h'],
+      ['i','j','k','l'],
+      ['m','n','o','p'],
+    ];
+    expect(check_full_board(board)).toBe(true);
+  });
+
+  it('returns false if a rows first cell is "_"', () => {
+    const board = [
+      ['_','b','c','d'],
+      ['e','f','g','h'],
+      ['i','j','k','l'],
+      ['m','n','o','p'],
+    ];
+    expect(check_full_board(board)).toBe(false);
+  });
+
+  it('returns false if any row has "_" in its 0th column', () => {
+    const board = [
+      ['a','b','c','d'],
+      ['e','f','g','h'],
+      ['_','j','k','l'],  
+      ['m','n','o','p'],
+    ];
+    expect(check_full_board(board)).toBe(false);
+  });
+
+  it('should return false when an underscore appears off the first column (but currently does not—revealing the bug)', () => {
+    const board = [
+      ['a','b','c','d'],
+      ['e','_','g','h'], 
+      ['i','j','k','l'],
+      ['m','n','o','p'],
+    ];
+    expect(check_full_board(board)).toBe(false);
+  });
+});
 
 describe('get_builds', () => {
   test('2x2 unique board produces the eight expected traversals', () => {

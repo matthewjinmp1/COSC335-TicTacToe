@@ -10,7 +10,7 @@ var monument_built = false;
 var just_placed_factory = false;
 var factory_blocks = [];
 var resources = ['glass', 'brick', 'stone', 'wheat', 'wood'];
-import { convert_game_state_to_string, get_score, list_to_string, get_builds } from "./functions";
+import { convert_game_state_to_string, get_score, list_to_string, get_builds, get_acheivements } from "./functions";
 
 function get_time() {
     const date = new Date(Date.now());
@@ -313,8 +313,6 @@ buildings['theater'] = theater;
 buildings['factory'] = factory;
 buildings['monument'] = monument;
 
-var building_types = Object.keys(buildings);
-
 deal_resources();
 
 class block {
@@ -362,30 +360,49 @@ function uncover_blocks() {
     }
 }
 
+const db = firebase.firestore();
 
+function save_game() {
+    const user = firebase.auth().currentUser;
+    const board = convert_game_state_to_string(game_state);
+    let score = get_score(game_state);
 
-// const db = firebase.firestore();
+    db.collection('games').add({
+        uid: user.uid,
+        board: board,
+        score: score
+    })
+    .then(docRef => {
+    console.log('Game saved with ID:', docRef.id);
+    })
+    .catch(error => {
+    console.error('Error saving game:', error);
+    });
+}
 
-// function save_game(data) {
-//   const user = firebase.auth().currentUser;
-//   if (!user) {
-//     return Promise.reject(new Error('Not signed in'));
-//   }
-
-//   let board = convert_game_state_to_string();
-
-//   return db
-//     .collection('games')            
-//     .add({                           
-//       uid: user.uid,     
-//       board: board,    
-//     })
-// }
+function check_acheivements(score) {
+    const user = firebase.auth().currentUser;
+    let acheivements = get_acheivements(game_state, score);
+    if (acheivements) {
+        db.collection('acheivements').add({
+            uid: user.uid,
+            achievments: acheivements,
+        })
+        .then(docRef => {
+        console.log('Saved acheivements with id:', docRef.id);
+        })
+        .catch(error => {
+        console.error('Error saving acheivements:', error);
+        });
+    }
+}
 
 function complete_town() {
     let score = get_score(game_state);
     alert(score);
-    window.location.reload();  
+    save_game();
+    check_acheivements(score);
+    // window.location.reload();
 }
 
 let complete_town_button = document.getElementById('complete_town');
