@@ -99,7 +99,19 @@
     margin: 10% 20% 10% 20%;
     border: thin solid black;
     border-radius: 3%;
-    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.achievements {
+    background-color: beige;
+    margin: 10% 20% 10% 20%;
+    border: thin solid black;
+    border-radius: 3%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .resource_card_name {
@@ -277,3 +289,49 @@ img {
 .selected {
     border: 2px solid red;
 }
+
+/* the semi-transparent backdrop covering the whole viewport */
+#achievement-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;             /* hide by default */
+    align-items: center;       /* vertical centering */
+    justify-content: center;   /* horizontal centering */
+    z-index: 1000;
+  }
+  
+/* the white “modal” box that holds your table */
+#achievement-modal {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* the close button */
+#achievement-modal .close-btn {
+    position: absolute;
+    top: -5px; right: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+  
+/* basic table styling */
+#achievement-modal table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#achievement-modal th,
+#achievement-modal td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+  

@@ -257,12 +257,12 @@ function Game() {
                 </div>
                 <div className="right">
                     <div className="monument_area">
-                        <div></div>
                         <Monument></Monument>
+                        <div></div>
                     </div>
                     <div className="button_area">
-                        <div></div>
                         <div id="complete_town" className="complete_town">Complete Town</div>
+                        <div id="achievements" className="achievements">Achievements</div>
                     </div>
                 </div>
             </div>

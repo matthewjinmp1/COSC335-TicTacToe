@@ -1,15 +1,15 @@
-export function get_acheivements(game_state, score) {
-    let acheivements = [];
+export function get_achievements(game_state, score) {
+    let achievements = [];
     if (check_chief_diversity_officer(game_state)) {
-        acheivements.push('Chief Diversity Officer');
+        achievements.push('Chief Diversity Officer');
     }
     if (check_master_builder(score)) {
-        acheivements.push('Master Builder');
+        achievements.push('Master Builder');
     }
     if (check_full_board(game_state)) {
-        acheivements.push('Full Board');
+        achievements.push('Full Board');
     }
-    return acheivements;
+    return achievements;
 }
 
 export function check_chief_diversity_officer(game_state) {

@@ -10,7 +10,7 @@ var monument_built = false;
 var just_placed_factory = false;
 var factory_blocks = [];
 var resources = ['glass', 'brick', 'stone', 'wheat', 'wood'];
-import { convert_game_state_to_string, get_score, list_to_string, get_builds, get_acheivements } from "./functions";
+import { convert_game_state_to_string, get_score, list_to_string, get_builds, get_achievements } from "./functions";
 
 function get_time() {
     const date = new Date(Date.now());
@@ -363,8 +363,8 @@ function uncover_blocks() {
 const db = firebase.firestore();
 
 function save_game() {
-    const user = firebase.auth().currentUser;
     const board = convert_game_state_to_string(game_state);
+    const user = firebase.auth().currentUser;
     let score = get_score(game_state);
 
     db.collection('games').add({
@@ -380,19 +380,19 @@ function save_game() {
     });
 }
 
-function check_acheivements(score) {
+function check_achievements(score) {
+    let achievements = get_achievements(game_state, score);
     const user = firebase.auth().currentUser;
-    let acheivements = get_acheivements(game_state, score);
-    if (acheivements) {
-        db.collection('acheivements').add({
+    if (achievements) {
+        db.collection('achievements').add({
             uid: user.uid,
-            achievments: acheivements,
+            achievements: achievements,
         })
         .then(docRef => {
-        console.log('Saved acheivements with id:', docRef.id);
+        console.log('Saved achievements with id:', docRef.id);
         })
         .catch(error => {
-        console.error('Error saving acheivements:', error);
+        console.error('Error saving achievements:', error);
         });
     }
 }
@@ -401,11 +401,78 @@ function complete_town() {
     let score = get_score(game_state);
     alert(score);
     save_game();
-    check_acheivements(score);
+    check_achievements(score);
     // window.location.reload();
 }
 
 let complete_town_button = document.getElementById('complete_town');
 complete_town_button.addEventListener('click', complete_town);
+
+function print(thing) {
+    console.log(thing);
+}
+
+// Call this with your array of achievement strings
+function showAchievementsTable(achievements) {
+    print(achievements);
+    const overlay = document.getElementById('achievement-overlay');
+    const tbody   = overlay.querySelector('tbody');
+  
+    // clear out old rows
+    tbody.innerHTML = '';
+  
+    // build new rows
+    achievements.forEach((ach, i) => {
+      const row = document.createElement('tr');
+      const idx = document.createElement('td');
+      const txt = document.createElement('td');
+      idx.textContent = i + 1;
+      txt.textContent = ach;
+      row.append(idx, txt);
+      tbody.appendChild(row);
+    });
+  
+    // display the overlay
+    overlay.style.display = 'flex';
+  }
+  
+// Setup close-button behavior
+document.querySelector('#achievement-modal .close-btn')
+.addEventListener('click', () => {
+    document.getElementById('achievement-overlay').style.display = 'none';
+});
+
+// Also clicking the backdrop closes it:
+document.getElementById('achievement-overlay')
+.addEventListener('click', e => {
+    if (e.target.id === 'achievement-overlay') {
+    e.currentTarget.style.display = 'none';
+    }
+});
+
+async function show_achievements() {
+    const user = firebase.auth().currentUser;
+    try {
+        const snapshot = await db
+        .collection('achievements')
+        .where('uid', '==', user.uid)
+        .get();
+
+        let achievementsList = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.achievements) {
+            achievementsList = achievementsList.concat(data.achievements);
+            }
+        });
+        showAchievementsTable(achievementsList);
+
+    } catch (err) {
+        console.error('Query error:', err);
+    }
+}
+
+let achievements_button = document.getElementById('achievements');
+achievements_button.addEventListener('click', show_achievements);
 
 uncover_blocks();
