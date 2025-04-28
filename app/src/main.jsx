@@ -73,7 +73,7 @@ function Farm() {
                 </div>
                 <div class="pole"></div>
             </div>
-            <div class="building_bottom">Feds 4 buildings anywhere in your town.</div>
+            <div class="building_bottom">Feeds 4 buildings anywhere in your town.</div>
         </div>
     );
 }
@@ -163,7 +163,7 @@ function Factory() {
                 </div>
                 <div class="pole"></div>
             </div>
-            <div class="building_bottom factory_description">When constructed, place 1 of the 5 resources on this building. When this resources appears in the draw, you may choose any other resource.</div>
+            <div class="building_bottom factory_description">When constructed, place 1 of the 5 resources on this building. When this resource appears in the draw, you may choose any other resource.</div>
         </div>
     );
 }
