@@ -12,11 +12,11 @@
 
 .building_card {
     display: grid;
-    grid-template-rows: 1fr 2fr 2fr 1.5fr;
-    height: 90%;
-    width: 90%;
+    grid-template-rows: 1fr 1.65fr 2.35fr 1.5fr;
+    height: 45vh;
+    width: 12.5vw;
     background-color: rgb(229, 206, 176);
-    margin: 3%;
+    margin: 10px;
     border-radius: 5px;
     border: thin solid black;
     justify-self: center;
@@ -170,6 +170,7 @@
 .building_bottom {
     background-color: rgb(232, 163, 72);
     border-radius: 0 0 5px 5px;
+    text-align: center;
 }
 
 .four {
@@ -264,6 +265,7 @@
     margin: 20%;
 }
 
+
 .scale {
     transform: scale(1.5);
 }
@@ -278,13 +280,26 @@
 
 img {
     width: 100%; 
-    height: 118px; 
+    height: 12.5vh; 
     object-fit: fill; 
 }
 
 .factory_description {
     font-size: 70%;
 }
+
+.tavern_desc {
+    font-size: 70%;
+}
+
+.theater_desc {
+    font-size: 80%;
+}
+.cathedral_desc {
+    font-size: 80%;
+}
+
+
 
 .selected {
     border: 2px solid red;
