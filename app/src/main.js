@@ -465,6 +465,8 @@ async function show_achievements() {
             achievementsList = achievementsList.concat(data.achievements);
             }
         });
+        print(user.uid);
+        print(achievementsList);
         showAchievementsTable(achievementsList);
 
     } catch (err) {
