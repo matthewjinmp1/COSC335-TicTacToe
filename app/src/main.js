@@ -104,9 +104,9 @@ function place_item(square) {
                 }
             }
             const div = document.createElement('div');
-            div.className = building_selected + '_piece center_piece';
+            div.className = building_selected + '_piece center_piece scale';
             if (building_selected == 'factory') {
-                div.classList.add('scale');
+                div.classList.add('factory_scale');
             }
             square.append(div);
             for (let [row, column] of coordinates) {
@@ -366,11 +366,14 @@ function save_game() {
     const board = convert_game_state_to_string(game_state);
     const user = firebase.auth().currentUser;
     let score = get_score(game_state);
+    let end_time = get_time();
 
     db.collection('games').add({
         uid: user.uid,
         board: board,
-        score: score
+        score: score,
+        start_time: start_time,
+        end_time: end_time,
     })
     .then(docRef => {
     console.log('Game saved with ID:', docRef.id);
@@ -414,7 +417,6 @@ function print(thing) {
 
 // Call this with your array of achievement strings
 function showAchievementsTable(achievements) {
-    print(achievements);
     const overlay = document.getElementById('achievement-overlay');
     const tbody   = overlay.querySelector('tbody');
   
@@ -458,16 +460,16 @@ async function show_achievements() {
         .where('uid', '==', user.uid)
         .get();
 
-        let achievementsList = [];
+        let achievementsList = new Set();
         snapshot.forEach(doc => {
             const data = doc.data();
             if (data.achievements) {
-            achievementsList = achievementsList.concat(data.achievements);
+            data.achievements.forEach(achievement => {
+                achievementsList.add(achievement);
+            });
             }
         });
-        print(user.uid);
-        print(achievementsList);
-        showAchievementsTable(achievementsList);
+        showAchievementsTable(Array.from(achievementsList));
 
     } catch (err) {
         console.error('Query error:', err);

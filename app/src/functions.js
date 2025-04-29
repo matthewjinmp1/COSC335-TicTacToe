@@ -4,12 +4,43 @@ export function get_achievements(game_state, score) {
         achievements.push('Chief Diversity Officer');
     }
     if (check_master_builder(score)) {
-        achievements.push('Master Builder');
+        achievements.push('Try Hard Sweat');
     }
     if (check_full_board(game_state)) {
-        achievements.push('Full Board');
+        achievements.push('16 Pack');
+    }
+    if (check_empty_board(game_state)) {
+        achievements.push('Couldnt Care Less');
+    }
+    if (check_15_wells(game_state)) {
+        achievements.push('Well Then');
     }
     return achievements;
+}
+
+export function check_15_wells(game_state) {
+    let well_count = 0;
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (e == 'well') {
+                well_count++;
+            }
+        }
+    }
+    return well_count == 15;
+}
+
+export function check_empty_board(game_state) {
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (e != '_') {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 export function check_chief_diversity_officer(game_state) {
