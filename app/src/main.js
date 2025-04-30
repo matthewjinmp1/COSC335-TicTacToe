@@ -185,6 +185,41 @@ function deal_resources() {
     }
 }
 
+function can_build(name, monument_built, blocks_required, height, width, builds) {
+    if (name == 'monument') {
+        if (monument_built) {
+            return false;
+        }
+    }
+    if (blocks_selected == blocks_required) {
+        for (let row = 0; row <= 4-height; row++) {
+            for (let column = 0; column <= 4-width; column++) {
+                var part = [];
+                for (let row1 = row; row1 < row+height; row1++) {
+                    part.push(selected[row1].slice(column, column+width))
+                }
+                var string = list_to_string(part);
+                if (builds.includes(string)) {
+                    return true;
+                } 
+            }
+        }
+        for (let row = 0; row <= 4-width; row++) {
+            for (let column = 0; column <= 4-height; column++) {
+                var part = [];
+                for (let row1 = row; row1 < row+width; row1++) {
+                    part.push(selected[row1].slice(column, column+height))
+                }
+                var string = list_to_string(part);
+                if (builds.includes(string)) {
+                    return true;
+                } 
+            }
+        }
+    }
+    return false;
+}
+
 class building {
     constructor(build, name) {
         this.element = document.getElementById(name);
@@ -436,7 +471,7 @@ function showAchievementsTable(achievements) {
   
     // display the overlay
     overlay.style.display = 'flex';
-  }
+}
   
 // Setup close-button behavior
 document.querySelector('#achievement-modal .close-btn')
@@ -448,6 +483,45 @@ document.querySelector('#achievement-modal .close-btn')
 document.getElementById('achievement-overlay')
 .addEventListener('click', e => {
     if (e.target.id === 'achievement-overlay') {
+    e.currentTarget.style.display = 'none';
+    }
+});
+
+// Call this with your array of achievement strings
+function show_games_table(games) {
+    const overlay = document.getElementById('games-overlay');
+    const tbody   = overlay.querySelector('tbody');
+  
+    // clear out old rows
+    tbody.innerHTML = '';
+  
+    // build new rows
+    games.forEach((game, i) => {
+      const row = document.createElement('tr');
+      const idx = document.createElement('td');
+      const startTimeCell = document.createElement('td');
+      const scoreCell = document.createElement('td');
+      idx.textContent = i + 1;
+      startTimeCell.textContent = game[0];
+      scoreCell.textContent = game[1];
+      row.append(idx, startTimeCell, scoreCell);
+      tbody.appendChild(row);
+    });
+  
+    // display the overlay
+    overlay.style.display = 'flex';
+}
+
+// Setup close-button behavior
+document.querySelector('#games-modal .close-btn')
+.addEventListener('click', () => {
+    document.getElementById('games-overlay').style.display = 'none';
+});
+
+// Also clicking the backdrop closes it:
+document.getElementById('games-overlay')
+.addEventListener('click', e => {
+    if (e.target.id === 'games-overlay') {
     e.currentTarget.style.display = 'none';
     }
 });
@@ -476,7 +550,32 @@ async function show_achievements() {
     }
 }
 
+async function show_games() {
+    const user = firebase.auth().currentUser;
+    try {
+        const snapshot = await db
+        .collection('games')
+        .where('uid', '==', user.uid)
+        .get();
+
+        let games = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            let score = data.score;
+            let start_time = data.start_time;
+            games.push([start_time, score]);
+        });
+        show_games_table(games);
+
+    } catch (err) {
+        console.error('Query error:', err);
+    }
+}
+
 let achievements_button = document.getElementById('achievements');
 achievements_button.addEventListener('click', show_achievements);
+
+let games_button = document.getElementById('games_button');
+games_button.addEventListener('click', show_games);
 
 uncover_blocks();
