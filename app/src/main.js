@@ -12,6 +12,10 @@ var factory_blocks = [];
 var resources = ['glass', 'brick', 'stone', 'wheat', 'wood'];
 import { convert_game_state_to_string, get_score, list_to_string, get_builds, get_achievements } from "./functions";
 
+function print(thing) {
+    console.log(thing);
+}
+
 function get_time() {
     const date = new Date(Date.now());
     const year = date.getFullYear();
@@ -55,6 +59,14 @@ var game_state = [
     ['_','_','_','_'],
     ['_','_','_','_']
 ];
+
+for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+        game_state[i][j] = 'cottage';
+    }
+}
+
+print(game_state);
 
 function place_item(square) {
     var square_id = square.id;
@@ -445,10 +457,6 @@ function complete_town() {
 
 let complete_town_button = document.getElementById('complete_town');
 complete_town_button.addEventListener('click', complete_town);
-
-function print(thing) {
-    console.log(thing);
-}
 
 // Call this with your array of achievement strings
 function showAchievementsTable(achievements) {

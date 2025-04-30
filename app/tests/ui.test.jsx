@@ -8,14 +8,8 @@ describe("App DOM", () => {
     render(<Game />);
   });
 
-  test("renders a 3x3 board", () => {
-    const buttons = screen.getAllByRole("button");
-    expect(buttons.length).toBe(10);
-  });
-
-  test("clicking a square updates the board", () => {
-    const buttons = screen.getAllByRole("button");
-    fireEvent.click(buttons[0]);
+  test("clicking a sqaure with a resource in hard places that resource", () => {
+    const square = document.getElementById("00");
     expect(buttons[0].textContent).toBe("X");
   });
 
@@ -26,5 +20,4 @@ describe("App DOM", () => {
     expect(buttons[0].textContent).toBe("");
   });
 
-  
 });

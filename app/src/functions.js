@@ -15,7 +15,55 @@ export function get_achievements(game_state, score) {
     if (check_15_wells(game_state)) {
         achievements.push('Well Then');
     }
+    if (check_10_chapels(game_state)) {
+        achievements.push("Pope Francis");
+    }
+    if (check_8_factories(game_state)) {
+        achievements.push("Global Warming");
+    }
+    if (check_14_cottages(game_state)) {
+        achievements.push("Bilbo Baggins");
+    }
     return achievements;
+}
+
+export function check_14_cottages(game_state) {
+    let cottage_count = 0;
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (e == 'cottage') {
+                cottage_count++;
+            }
+        }
+    }
+    return cottage_count >= 14;
+}
+
+export function check_10_chapels(game_state) {
+    let chapel_count = 0;
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (e == 'chapel') {
+                chapel_count++;
+            }
+        }
+    }
+    return chapel_count >= 10;
+}
+
+export function check_8_factories(game_state) {
+    let factory_count = 0;
+    for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+            let e = game_state[r][c];
+            if (e == 'factory') {
+                factory_count++;
+            }
+        }
+    }
+    return factory_count >= 8;
 }
 
 export function check_15_wells(game_state) {
@@ -28,7 +76,7 @@ export function check_15_wells(game_state) {
             }
         }
     }
-    return well_count == 15;
+    return well_count >= 15;
 }
 
 export function check_empty_board(game_state) {
