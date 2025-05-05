@@ -10,7 +10,8 @@ var monument_built = false;
 var just_placed_factory = false;
 var factory_blocks = [];
 var resources = ['glass', 'brick', 'stone', 'wheat', 'wood'];
-import { convert_game_state_to_string, get_score, list_to_string, get_builds, get_achievements } from "./functions";
+import { convert_game_state_to_string, list_to_string, get_achievements } from "./functions";
+import { get_score, get_builds, can_build } from "./tested_functions";
 
 function print(thing) {
     console.log(thing);
@@ -68,6 +69,21 @@ var game_state = [
 
 // print(game_state);
 
+export function place_resource(resource, square) {
+    const div = document.createElement('div');
+    div.className = resource + ' center_piece';
+    square.append(div);
+}
+
+export function place_building(building_selected, square) {
+    const div = document.createElement('div');
+    div.className = building_selected + '_piece center_piece scale';
+    if (building_selected == 'factory') {
+        div.classList.add('factory_scale');
+    }
+    square.append(div);
+}
+
 function place_item(square) {
     var square_id = square.id;
     var row = square_id[0];
@@ -92,9 +108,7 @@ function place_item(square) {
             replace_card(); 
         }
     } else if (square.children.length == 0 && resource && !resource_already_placed) {
-        const div = document.createElement('div');
-        div.className = resource + ' center_piece';
-        square.append(div);
+        place_resource(resource, square);
         game_state[row][column] = resource;
         resource_already_placed = true;
         for (let block of blocks) {
@@ -115,12 +129,7 @@ function place_item(square) {
                     coordinates.push([row, column]);
                 }
             }
-            const div = document.createElement('div');
-            div.className = building_selected + '_piece center_piece scale';
-            if (building_selected == 'factory') {
-                div.classList.add('factory_scale');
-            }
-            square.append(div);
+            place_building(building_selected, square);
             for (let [row, column] of coordinates) {
                 selected[row][column] = '_';
                 game_state[row][column] = '_';
@@ -214,41 +223,6 @@ function deal_resources() {
     }
 }
 
-function can_build(name, monument_built, blocks_required, height, width, builds) {
-    if (name == 'monument') {
-        if (monument_built) {
-            return false;
-        }
-    }
-    if (blocks_selected == blocks_required) {
-        for (let row = 0; row <= 4-height; row++) {
-            for (let column = 0; column <= 4-width; column++) {
-                var part = [];
-                for (let row1 = row; row1 < row+height; row1++) {
-                    part.push(selected[row1].slice(column, column+width))
-                }
-                var string = list_to_string(part);
-                if (builds.includes(string)) {
-                    return true;
-                } 
-            }
-        }
-        for (let row = 0; row <= 4-width; row++) {
-            for (let column = 0; column <= 4-height; column++) {
-                var part = [];
-                for (let row1 = row; row1 < row+width; row1++) {
-                    part.push(selected[row1].slice(column, column+height))
-                }
-                var string = list_to_string(part);
-                if (builds.includes(string)) {
-                    return true;
-                } 
-            }
-        }
-    }
-    return false;
-}
-
 class building {
     constructor(build, name) {
         this.element = document.getElementById(name);
@@ -314,6 +288,7 @@ class building {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
 var cottage_build = [
     ['_', 'wheat'],
     ['brick', 'glass']
@@ -344,6 +319,8 @@ const tavern = new building(tavern_build, 'tavern');
 var well_build = [
     ['wood', 'stone'],
 ];
+
+print(get_builds(well_build));
 
 const well = new building(well_build, 'well');
 
@@ -475,7 +452,7 @@ function complete_town() {
     alert(score);
     save_game();
     check_achievements(score);
-    // window.location.reload();
+    window.location.reload();
 }
 
 let complete_town_button = document.getElementById('complete_town');
@@ -783,3 +760,5 @@ function display_profile() {
 }
 
 document.getElementById('profile').addEventListener('click', display_profile);
+
+});

@@ -235,6 +235,13 @@ body {
     border: thin solid black;
 }
 
+.monument_piece {
+    background-color: rgb(176, 35, 176);
+    border-radius: 50%;
+    margin: 20%;
+    border: thin solid black;
+}
+
 .tavern_piece {
     background-color: rgb(12, 142, 20);
     border-radius: 50%;
@@ -275,12 +282,7 @@ body {
     transform: scale(1.5);
 }
 
-.monument_piece {
-    background-color: rgb(176, 35, 176);
-    border-radius: 50%;
-    margin: 20%;
-    border: thin solid black;
-}
+
 
 img {
     width: 100%; 
