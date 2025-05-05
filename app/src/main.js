@@ -60,13 +60,13 @@ var game_state = [
     ['_','_','_','_']
 ];
 
-for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-        game_state[i][j] = 'cottage';
-    }
-}
+// for (let i = 0; i < 4; i++) {
+//     for (let j = 0; j < 4; j++) {
+//         game_state[i][j] = 'cottage';
+//     }
+// }
 
-print(game_state);
+// print(game_state);
 
 function place_item(square) {
     var square_id = square.id;
@@ -86,10 +86,10 @@ function place_item(square) {
             for (let resource_card of resource_cards) {
                 resource_card.style.pointerEvents = '';
             }
-            deselect_resources();
             factory_blocks.push(resource);
             resource = null;
-            deal_resources(); 
+            deselect_blocks();
+            replace_card(); 
         }
     } else if (square.children.length == 0 && resource && !resource_already_placed) {
         const div = document.createElement('div');
@@ -97,11 +97,11 @@ function place_item(square) {
         square.append(div);
         game_state[row][column] = resource;
         resource_already_placed = true;
-        deselect_resources();
         for (let block of blocks) {
             block.element.style.pointerEvents = 'none';
         }
-        deal_resources();
+        deselect_blocks();
+        replace_card(); 
     } else if (building_selected) {
         if (square.classList.contains('selected')) {
             let coordinates = [];
@@ -172,6 +172,23 @@ for (let resource_card of resource_cards) {
         deselect_resources();
         resource_card.classList.add('selected');
     })
+}
+
+function replace_card() {
+    for (let resource_card of resource_cards) {
+        if (resource_card.classList.contains('selected')) {
+            deck1.unshift(resource);
+            let newResource = deck1.pop();
+            let middleElement = resource_card.querySelector('.resource_card_middle');
+            let cardDiv = middleElement.querySelector('div');
+            cardDiv.className = newResource + ' center_piece';
+            let resourceName = resource_card.getElementsByClassName('resource_card_name');
+            resourceName[0].innerHTML = newResource.charAt(0).toUpperCase() + newResource.slice(1);
+            resource_card.classList.remove('selected');
+        }
+    }
+    resource = null;
+    resource_already_placed = false;
 }
 
 function deal_resources() {
@@ -386,6 +403,12 @@ var stone_block = new block('stone');
 
 var blocks = [wood_block, wheat_block, brick_block, glass_block, stone_block];
 
+function deselect_blocks() {
+    for (let block of blocks) {
+        block.element.classList.remove('selected');
+    }
+}
+
 function deselect_resources() {
     for (let block of blocks) {
         block.element.classList.remove('selected');
@@ -580,10 +603,183 @@ async function show_games() {
     }
 }
 
-let achievements_button = document.getElementById('achievements');
-achievements_button.addEventListener('click', show_achievements);
-
-let games_button = document.getElementById('games_button');
-games_button.addEventListener('click', show_games);
-
 uncover_blocks();
+
+function display_profile() {
+    document.getElementById('game').classList.add("hidden");
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Back to Game';
+    backButton.style.position = 'fixed';
+    backButton.style.top = '0px';
+    backButton.style.right = '0px';
+    backButton.style.padding = '10px';
+    backButton.style.border = '1px solid black';
+    backButton.style.backgroundColor = 'ivory';
+    backButton.addEventListener('click', () => {
+        document.getElementById('game').classList.remove('hidden');
+        backButton.remove();
+    });
+    document.body.appendChild(backButton);
+    
+    let profileContainer = document.createElement('div');
+    profileContainer.style.margin = '20px';
+    profileContainer.style.padding = '20px';
+    profileContainer.style.border = '1px solid #ccc';
+    profileContainer.style.backgroundColor = 'whitesmoke';
+
+    let header = document.createElement('h2');
+    header.textContent = 'Player Achievements';
+    profileContainer.appendChild(header);
+
+    let table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+
+    let headerRow = document.createElement('tr');
+    let th1 = document.createElement('th');
+    th1.textContent = '#';
+    th1.style.border = '1px solid #000';
+    th1.style.padding = '8px';
+    let th2 = document.createElement('th');
+    th2.textContent = 'Achievement';
+    th2.style.border = '1px solid #000';
+    th2.style.padding = '8px';
+
+    headerRow.append(th1, th2);
+    table.appendChild(headerRow);
+
+    let user = firebase.auth().currentUser;
+    db.collection('achievements')
+        .where('uid', '==', user.uid)
+        .get()
+        .then(snapshot => {
+            let achievementsSet = new Set();
+            snapshot.forEach(doc => {
+                let data = doc.data();
+                if (data.achievements) {
+                    data.achievements.forEach(a => achievementsSet.add(a));
+                }
+            });
+            let achievements = Array.from(achievementsSet);
+            achievements.forEach((ach, index) => {
+                let row = document.createElement('tr');
+                let cellIndex = document.createElement('td');
+                cellIndex.textContent = index + 1;
+                cellIndex.style.border = '1px solid #000';
+                cellIndex.style.padding = '8px';
+                let cellAch = document.createElement('td');
+                cellAch.textContent = ach;
+                cellAch.style.border = '1px solid #000';
+                cellAch.style.padding = '8px';
+                row.append(cellIndex, cellAch);
+                table.appendChild(row);
+            });
+        })
+        .catch(err => {
+            console.error('Error loading achievements:', err);
+        });
+
+    let gamesContainer = document.createElement('div');
+    gamesContainer.style.margin = '20px';
+    gamesContainer.style.padding = '20px';
+    gamesContainer.style.border = '1px solid #ccc';
+    gamesContainer.style.backgroundColor = 'whitesmoke';
+
+    let gamesHeader = document.createElement('h2');
+    gamesHeader.textContent = 'Games Played';
+    gamesContainer.appendChild(gamesHeader);
+
+    let gamesTable = document.createElement('table');
+    gamesTable.style.width = '100%';
+    gamesTable.style.borderCollapse = 'collapse';
+
+    headerRow = document.createElement('tr');
+    th1 = document.createElement('th');
+    th1.textContent = '#';
+    th1.style.border = '1px solid #000';
+    th1.style.padding = '8px';
+    th2 = document.createElement('th');
+    th2.textContent = 'Start Time';
+    th2.style.border = '1px solid #000';
+    th2.style.padding = '8px';
+    let th3 = document.createElement('th');
+    th3.textContent = 'Score';
+    th3.style.border = '1px solid #000';
+    th3.style.padding = '8px';
+    headerRow.append(th1, th2, th3);
+    gamesTable.appendChild(headerRow);
+
+    user = firebase.auth().currentUser;
+    db.collection('games')
+        .where('uid', '==', user.uid)
+        .get()
+        .then(snapshot => {
+            let count = 1;
+            snapshot.forEach(doc => {
+                let data = doc.data();
+                let row = document.createElement('tr');
+
+                let cellIndex = document.createElement('td');
+                cellIndex.textContent = count;
+                cellIndex.style.border = '1px solid #000';
+                cellIndex.style.padding = '8px';
+
+                let cellStartTime = document.createElement('td');
+                cellStartTime.textContent = data.start_time;
+                cellStartTime.style.border = '1px solid #000';
+                cellStartTime.style.padding = '8px';
+
+                let cellScore = document.createElement('td');
+                cellScore.textContent = data.score;
+                cellScore.style.border = '1px solid #000';
+                cellScore.style.padding = '8px';
+
+                row.append(cellIndex, cellStartTime, cellScore);
+                gamesTable.appendChild(row);
+                count++;
+            });
+        })
+        .catch(err => {
+            console.error('Error loading games:', err);
+        });
+
+    // Create a grid container for the two panels
+    let oldGrid = document.getElementById('profile-grid-container');
+    if (oldGrid) {
+        oldGrid.remove();
+    }
+    const gridContainer = document.createElement('div');
+    gridContainer.id = 'profile-grid-container';
+    gridContainer.style.display = 'grid';
+    gridContainer.style.gridTemplateColumns = '1fr 1fr';
+    gridContainer.style.gap = '20px';
+    gridContainer.style.margin = '20px';
+
+    // Only append the tables if they aren’t already added
+    if (!profileContainer.contains(table)) {
+        profileContainer.appendChild(table);
+    }
+    if (!gamesContainer.contains(gamesTable)) {
+        gamesContainer.appendChild(gamesTable);
+    }
+
+    gridContainer.appendChild(profileContainer);
+    gridContainer.appendChild(gamesContainer);
+    document.body.appendChild(gridContainer);
+
+    backButton.addEventListener('click', () => {
+        const gridContainer = document.getElementById('profile-grid-container');
+        if (gridContainer) {
+            gridContainer.style.display = 'none';
+        }
+    });
+    document.getElementById('logout_button').addEventListener('click', () => {
+        const gridContainer = document.getElementById('profile-grid-container');
+        if (gridContainer) {
+            gridContainer.style.display = 'none';
+        }
+        backButton.style.display = 'none';
+    });
+}
+
+document.getElementById('profile').addEventListener('click', display_profile);

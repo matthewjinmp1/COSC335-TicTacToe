@@ -258,16 +258,10 @@ export function Game() {
                 <div className="right">
                     <div className="monument_area">
                         <Monument></Monument>
-                        <div className="button_area2">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div id="games_button" className="button">My Games</div>
-                        </div>
                     </div>
                     <div className="button_area">
                         <div id="complete_town" className="button">Complete Town</div>
-                        <div id="achievements" className="button">Achievements</div>
+                        <div id="profile" className="button">Profile</div>
                     </div>
                 </div>
             </div>
