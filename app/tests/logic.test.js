@@ -1,4 +1,4 @@
-import { get_score, get_builds, can_build } from '../src/tested_functions.js';
+import { get_score, get_builds, can_build } from '../src/logic_functions.js';
 
 describe('can_build', () => {
   test('well', () => {

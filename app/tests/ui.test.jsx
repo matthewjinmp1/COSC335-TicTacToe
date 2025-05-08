@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Game } from '../src/main.jsx';
-import { place_resource, place_building } from '../src/main.js'
+import { place_building, place_resource } from "../src/ui_functions.js";
 
 describe("App DOM", () => {
   beforeEach(() => {

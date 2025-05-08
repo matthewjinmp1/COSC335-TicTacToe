@@ -1,4 +1,12 @@
-import { list_to_string } from "./functions";
+function list_to_string(list) {
+    let string = ''
+    for (let row of list) {
+        for (let e of row) {
+            string += e;
+        }
+    }
+    return string;
+}
 
 export function can_build(name, monument_built, blocks_required, height, width, builds, blocks_selected, selected) {
     if (name == 'monument') {
