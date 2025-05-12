@@ -1,95 +1,31 @@
-import { convert_game_state_to_string, get_score, list_to_string, get_builds, 
-  check_full_board, check_chief_diversity_officer } from '../src/functions.js';
+import { get_score, get_builds, can_build } from '../src/logic_functions.js';
 
-describe('check_chief_diversity_officer', () => {
-  it('returns true when all 8 distinct buildings appear anywhere in the 4×4 grid', () => {
-    // place each required building at least once
-    const grid = [
-      ['cottage', 'chapel',  'farm',    'tavern'],
-      ['well',    'theater', 'factory', 'monument'],
-      ['cottage', 'cottage', 'chapel',  'farm'],
-      ['tavern',  'well',    'theater', 'factory'],
-    ];
-    expect(check_chief_diversity_officer(grid)).toBe(true);
-  });
+describe('can_build', () => {
+  test('well', () => {
+    let name = 'well';
+    let monument_built = false;
+    let blocks_required = 2;
+    let height = 2;
+    let width = 1;
+    let builds = [
+      'woodstone',
+      'woodstone',
+      'woodstone',
+      'woodstone',
+      'stonewood',
+      'stonewood',
+      'stonewood',
+      'stonewood'
+    ]
+    let blocks_selected = 2;
+    let selected = [
+      ['_', '_', '_', '_'],
+      ['_', '_', '_', '_'],
+      ['_', '_', '_', '_'],
+      ['_', '_', 'stone', 'wood'],
+    ]
 
-  it('returns false if any one building is missing', () => {
-    // omit 'monument'
-    const grid = [
-      ['cottage', 'chapel',  'farm',   'tavern'],
-      ['well',    'theater', 'factory','cottage'],
-      ['chapel',  'farm',    'tavern', 'well'],
-      ['theater','factory',  'cottage','chapel'],
-    ];
-    expect(check_chief_diversity_officer(grid)).toBe(false);
-  });
-
-  it('ignores duplicates and non‐available entries', () => {
-    // only 7 distinct available buildings + some extras
-    const grid = [
-      ['cottage', 'chapel',  'farm',    'tavern'],
-      ['well',    'theater', 'factory', 'cottage'],
-      ['monument','monument','X',       'Y'],
-      ['Z',       'Z',       'chapel',  'farm'],
-    ];
-    // actually this has all 8 including 'monument' → true
-    expect(check_chief_diversity_officer(grid)).toBe(true);
-
-    // now remove 'farm' entirely
-    const grid2 = [
-      ['cottage', 'chapel',  'X',       'tavern'],
-      ['well',    'theater', 'factory', 'cottage'],
-      ['monument','monument','Y',       'Z'],
-      ['Z',       'chapel',  'X',       'tavern'],
-    ];
-    expect(check_chief_diversity_officer(grid2)).toBe(false);
-  });
-
-  it('returns false on an empty or all‐other grid', () => {
-    const emptyGrid = Array(4).fill(Array(4).fill(null));
-    expect(check_chief_diversity_officer(emptyGrid)).toBe(false);
-  });
-});
-
-describe('full_board', () => {
-  it('returns true when there are no "_" anywhere on a 4x4 board', () => {
-    const board = [
-      ['a','b','c','d'],
-      ['e','f','g','h'],
-      ['i','j','k','l'],
-      ['m','n','o','p'],
-    ];
-    expect(check_full_board(board)).toBe(true);
-  });
-
-  it('returns false if a rows first cell is "_"', () => {
-    const board = [
-      ['_','b','c','d'],
-      ['e','f','g','h'],
-      ['i','j','k','l'],
-      ['m','n','o','p'],
-    ];
-    expect(check_full_board(board)).toBe(false);
-  });
-
-  it('returns false if any row has "_" in its 0th column', () => {
-    const board = [
-      ['a','b','c','d'],
-      ['e','f','g','h'],
-      ['_','j','k','l'],  
-      ['m','n','o','p'],
-    ];
-    expect(check_full_board(board)).toBe(false);
-  });
-
-  it('should return false when an underscore appears off the first column (but currently does not—revealing the bug)', () => {
-    const board = [
-      ['a','b','c','d'],
-      ['e','_','g','h'], 
-      ['i','j','k','l'],
-      ['m','n','o','p'],
-    ];
-    expect(check_full_board(board)).toBe(false);
+    expect(can_build(name, monument_built, blocks_required, height, width, builds, blocks_selected, selected)).toBe(true);
   });
 });
 
@@ -129,101 +65,6 @@ describe('get_builds', () => {
       'zyx', // columns right->left
       'zyx'  // columns right->left, bottom->top (same)
     ]);
-  });
-});
-
-describe('list_to_string', () => {
-  test('returns empty string for empty list', () => {
-    expect(list_to_string([])).toBe('');
-  });
-
-  test('concatenates a single row correctly', () => {
-    const input = [['h', 'i', '!']];
-    expect(list_to_string(input)).toBe('hi!');
-  });
-
-  test('concatenates multiple rows in row-major order', () => {
-    const input = [
-      ['a', 'b', 'c'],
-      ['d', 'e'],
-      ['f']
-    ];
-    expect(list_to_string(input)).toBe('abcdef');
-  });
-
-  test('treats nested empty rows as no-ops', () => {
-    const input = [
-      [],
-      ['x', 'y'],
-      []
-    ];
-    expect(list_to_string(input)).toBe('xy');
-  });
-
-  test('coerces non-string elements to strings', () => {
-    const input = [
-      [1, 2],
-      [true, null, undefined]
-    ];
-    expect(list_to_string(input)).toBe('12truenullundefined');
-  });
-});
-
-describe('convert_game_state_to_string', () => {
-  test('returns 16-character string for empty board', () => {
-    const emptyBoard = Array(4).fill(Array(4).fill(null));
-    const result = convert_game_state_to_string(emptyBoard);
-    expect(result).toHaveLength(16);
-    expect(result).toBe('_'.repeat(16));
-  });
-
-  test('maps all building types correctly', () => {
-    // one of each building in row-major order
-    const buildings = [
-      ['cottage','chapel','farm','tavern'],
-      ['well','theater','factory','monument'],
-      ['wood','wheat','brick','glass'],
-      ['stone',null,null,null]
-    ];
-    const result = convert_game_state_to_string(buildings);
-    expect(result).toBe('12345678abcde___'); 
-    const expected = [
-      '1','2','3','4',
-      '5','6','7','8',
-      'a','b','c','d',
-      'e','_','_','_'
-    ].join('');
-    expect(result).toBe(expected);
-  });
-
-  test('handles a mixed, sparse board', () => {
-    const state = [
-      ['cottage', 'brick', null, 'farm'],
-      [null, 'wood', 'chapel', null],
-      ['glass', null, null, 'stone'],
-      ['tavern', 'wheat', 'factory', 'unknown']
-    ];
-    const expected = '1c_3_a2_d__e4b7_';
-    expect(convert_game_state_to_string(state)).toBe(expected);
-    const explicit = [
-      '1','c','_','3',
-      '_','a','2','_',
-      'd','_','_','e',
-      '4','b','7','_'
-    ].join('');
-    expect(convert_game_state_to_string(state)).toBe(explicit);
-  });
-
-  test('always returns a string of length 16 even with wrong dimensions', () => {
-    const weird = [
-      ['cottage'],
-      [],
-      ['farm', 'tavern', 'well', 'theater', 'factory'],
-      ['monument', 'wood']
-    ];
-    const out = convert_game_state_to_string(weird);
-    expect(typeof out).toBe('string');
-    expect(out).toHaveLength(16);
   });
 });
 

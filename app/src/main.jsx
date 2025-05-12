@@ -270,5 +270,8 @@ export function Game() {
     );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("game"));
-root.render(<Game />);
+
+export function renderGame() {
+    const root = ReactDOM.createRoot(document.getElementById("game"));
+    root.render(<Game />);
+}

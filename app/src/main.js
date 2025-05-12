@@ -8,9 +8,12 @@ var building_selected = '';
 var buildings = {};
 var monument_built = false;
 var just_placed_factory = false;
+let block_selected = false;
 var factory_blocks = [];
 var resources = ['glass', 'brick', 'stone', 'wheat', 'wood'];
-import { convert_game_state_to_string, get_score, list_to_string, get_builds, get_achievements } from "./functions";
+import { convert_game_state_to_string, get_achievements } from "./functions";
+import { get_score, get_builds, can_build } from "./logic_functions";
+import { place_resource, place_building } from "./ui_functions";
 
 function print(thing) {
     console.log(thing);
@@ -92,9 +95,7 @@ function place_item(square) {
             replace_card(); 
         }
     } else if (square.children.length == 0 && resource && !resource_already_placed) {
-        const div = document.createElement('div');
-        div.className = resource + ' center_piece';
-        square.append(div);
+        place_resource(resource, square);
         game_state[row][column] = resource;
         resource_already_placed = true;
         for (let block of blocks) {
@@ -102,6 +103,15 @@ function place_item(square) {
         }
         deselect_blocks();
         replace_card(); 
+        if (block_selected) {
+            for (let resource_card of resource_cards) {
+                const resourceDiv = resource_card.querySelector('.resource_card_middle div');
+                let resource = resourceDiv.classList[0];
+                if (factory_blocks.includes(resource)) {
+                    replaceResourceCard(resource);
+                }
+            }
+        }
     } else if (building_selected) {
         if (square.classList.contains('selected')) {
             let coordinates = [];
@@ -115,12 +125,7 @@ function place_item(square) {
                     coordinates.push([row, column]);
                 }
             }
-            const div = document.createElement('div');
-            div.className = building_selected + '_piece center_piece scale';
-            if (building_selected == 'factory') {
-                div.classList.add('factory_scale');
-            }
-            square.append(div);
+            place_building(building_selected, square);
             for (let [row, column] of coordinates) {
                 selected[row][column] = '_';
                 game_state[row][column] = '_';
@@ -155,6 +160,13 @@ function place_item(square) {
             blocks_selected += 1;
         }
     }
+    for (let resource_card of resource_cards) {
+        const resourceDiv = resource_card.querySelector('.resource_card_middle div');
+        let resource = resourceDiv.classList[0];
+        if (factory_blocks.includes(resource)) {
+            uncover_blocks();
+        }
+    }
     uncover_blocks();
 }
 
@@ -170,6 +182,7 @@ for (let resource_card of resource_cards) {
         resource = block.querySelector('div').classList[0];
         last_clicked = 'resource';
         deselect_resources();
+        block_selected = false;
         resource_card.classList.add('selected');
     })
 }
@@ -189,6 +202,20 @@ function replace_card() {
     }
     resource = null;
     resource_already_placed = false;
+}
+
+function replaceResourceCard(resourceName) {
+    for (let resource_card of resource_cards) {
+        const cardDiv = resource_card.querySelector('.resource_card_middle div');
+        if (cardDiv.classList.contains(resourceName)) {
+            deck1.unshift(resourceName);
+            const newResource = deck1.pop();
+            cardDiv.className = newResource + ' center_piece';
+            const resourceLabel = resource_card.querySelector('.resource_card_name');
+            resourceLabel.innerHTML = newResource.charAt(0).toUpperCase() + newResource.slice(1);
+            break;
+        }
+    }
 }
 
 function deal_resources() {
@@ -212,41 +239,6 @@ function deal_resources() {
         resource = null;
         resource_already_placed = false;
     }
-}
-
-function can_build(name, monument_built, blocks_required, height, width, builds) {
-    if (name == 'monument') {
-        if (monument_built) {
-            return false;
-        }
-    }
-    if (blocks_selected == blocks_required) {
-        for (let row = 0; row <= 4-height; row++) {
-            for (let column = 0; column <= 4-width; column++) {
-                var part = [];
-                for (let row1 = row; row1 < row+height; row1++) {
-                    part.push(selected[row1].slice(column, column+width))
-                }
-                var string = list_to_string(part);
-                if (builds.includes(string)) {
-                    return true;
-                } 
-            }
-        }
-        for (let row = 0; row <= 4-width; row++) {
-            for (let column = 0; column <= 4-height; column++) {
-                var part = [];
-                for (let row1 = row; row1 < row+width; row1++) {
-                    part.push(selected[row1].slice(column, column+height))
-                }
-                var string = list_to_string(part);
-                if (builds.includes(string)) {
-                    return true;
-                } 
-            }
-        }
-    }
-    return false;
 }
 
 class building {
@@ -279,38 +271,8 @@ class building {
     }
 
     can_build() {
-        if (this.name == 'monument') {
-            if (monument_built) {
-                return false;
-            }
-        }
-        if (blocks_selected == this.blocks_required) {
-            for (let row = 0; row <= 4-this.height; row++) {
-                for (let column = 0; column <= 4-this.width; column++) {
-                    var part = [];
-                    for (let row1 = row; row1 < row+this.height; row1++) {
-                        part.push(selected[row1].slice(column, column+this.width))
-                    }
-                    var string = list_to_string(part);
-                    if (this.builds.includes(string)) {
-                        return true;
-                    } 
-                }
-            }
-            for (let row = 0; row <= 4-this.width; row++) {
-                for (let column = 0; column <= 4-this.height; column++) {
-                    var part = [];
-                    for (let row1 = row; row1 < row+this.width; row1++) {
-                        part.push(selected[row1].slice(column, column+this.height))
-                    }
-                    var string = list_to_string(part);
-                    if (this.builds.includes(string)) {
-                        return true;
-                    } 
-                }
-            }
-        }
-        return false;
+       return can_build(this.name, monument_built, this.blocks_required, 
+        this.height, this.width, this.builds, blocks_selected, selected);
     }
 }
 
@@ -344,6 +306,8 @@ const tavern = new building(tavern_build, 'tavern');
 var well_build = [
     ['wood', 'stone'],
 ];
+
+print(get_builds(well_build));
 
 const well = new building(well_build, 'well');
 
@@ -388,6 +352,7 @@ class block {
                 this.element.classList.remove('selected');
             } else {
                 deselect_resources();
+                block_selected = true;
                 this.element.classList.add('selected');
             }
         })
@@ -475,135 +440,14 @@ function complete_town() {
     alert(score);
     save_game();
     check_achievements(score);
-    // window.location.reload();
+    setTimeout(() => {
+        print('slept');
+        window.location.reload();
+    }, 1000)
 }
 
 let complete_town_button = document.getElementById('complete_town');
 complete_town_button.addEventListener('click', complete_town);
-
-// Call this with your array of achievement strings
-function showAchievementsTable(achievements) {
-    const overlay = document.getElementById('achievement-overlay');
-    const tbody   = overlay.querySelector('tbody');
-  
-    // clear out old rows
-    tbody.innerHTML = '';
-  
-    // build new rows
-    achievements.forEach((ach, i) => {
-      const row = document.createElement('tr');
-      const idx = document.createElement('td');
-      const txt = document.createElement('td');
-      idx.textContent = i + 1;
-      txt.textContent = ach;
-      row.append(idx, txt);
-      tbody.appendChild(row);
-    });
-  
-    // display the overlay
-    overlay.style.display = 'flex';
-}
-  
-// Setup close-button behavior
-document.querySelector('#achievement-modal .close-btn')
-.addEventListener('click', () => {
-    document.getElementById('achievement-overlay').style.display = 'none';
-});
-
-// Also clicking the backdrop closes it:
-document.getElementById('achievement-overlay')
-.addEventListener('click', e => {
-    if (e.target.id === 'achievement-overlay') {
-    e.currentTarget.style.display = 'none';
-    }
-});
-
-// Call this with your array of achievement strings
-function show_games_table(games) {
-    const overlay = document.getElementById('games-overlay');
-    const tbody   = overlay.querySelector('tbody');
-  
-    // clear out old rows
-    tbody.innerHTML = '';
-  
-    // build new rows
-    games.forEach((game, i) => {
-      const row = document.createElement('tr');
-      const idx = document.createElement('td');
-      const startTimeCell = document.createElement('td');
-      const scoreCell = document.createElement('td');
-      idx.textContent = i + 1;
-      startTimeCell.textContent = game[0];
-      scoreCell.textContent = game[1];
-      row.append(idx, startTimeCell, scoreCell);
-      tbody.appendChild(row);
-    });
-  
-    // display the overlay
-    overlay.style.display = 'flex';
-}
-
-// Setup close-button behavior
-document.querySelector('#games-modal .close-btn')
-.addEventListener('click', () => {
-    document.getElementById('games-overlay').style.display = 'none';
-});
-
-// Also clicking the backdrop closes it:
-document.getElementById('games-overlay')
-.addEventListener('click', e => {
-    if (e.target.id === 'games-overlay') {
-    e.currentTarget.style.display = 'none';
-    }
-});
-
-async function show_achievements() {
-    const user = firebase.auth().currentUser;
-    try {
-        const snapshot = await db
-        .collection('achievements')
-        .where('uid', '==', user.uid)
-        .get();
-
-        let achievementsList = new Set();
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.achievements) {
-            data.achievements.forEach(achievement => {
-                achievementsList.add(achievement);
-            });
-            }
-        });
-        showAchievementsTable(Array.from(achievementsList));
-
-    } catch (err) {
-        console.error('Query error:', err);
-    }
-}
-
-async function show_games() {
-    const user = firebase.auth().currentUser;
-    try {
-        const snapshot = await db
-        .collection('games')
-        .where('uid', '==', user.uid)
-        .get();
-
-        let games = [];
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            let score = data.score;
-            let start_time = data.start_time;
-            games.push([start_time, score]);
-        });
-        show_games_table(games);
-
-    } catch (err) {
-        console.error('Query error:', err);
-    }
-}
-
-uncover_blocks();
 
 function display_profile() {
     document.getElementById('game').classList.add("hidden");
@@ -783,3 +627,5 @@ function display_profile() {
 }
 
 document.getElementById('profile').addEventListener('click', display_profile);
+
+// uncover_blocks();
